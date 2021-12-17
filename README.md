@@ -15,4 +15,8 @@ main_data_dir- \
     &nbsp;&nbsp;-Valid     \
         &nbsp;&nbsp;&nbsp;&nbsp;-Images \
         &nbsp;&nbsp;&nbsp;&nbsp;-Masks \
+       
+      
+The final results of confusion matrixes per set, weights, and log of test\train curves of loss and accuracy will be in the output directory that its name is just a timestemp.        
+     
     
