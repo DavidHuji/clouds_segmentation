@@ -14,11 +14,11 @@ main_data_dir- \
         &nbsp;&nbsp;&nbsp;&nbsp;-Masks \
     &nbsp;&nbsp;-Valid     \
         &nbsp;&nbsp;&nbsp;&nbsp;-Images \
-        &nbsp;&nbsp;&nbsp;&nbsp;-Masks \
+        &nbsp;&nbsp;&nbsp;&nbsp;-Masks 
        
       
 The final results of confusion matrixes per set, weights, and log of test\train curves of loss and accuracy will be in the output directory that its name is just a timestemp.        
-\
-\
+
+
 ### Create Patches
 In order to plit the data from full images to many small paches, you can use the patches_maker.py file by simply edit its arguemnts (of paths and sizes) at the head of the file and run it.
