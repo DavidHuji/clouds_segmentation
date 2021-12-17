@@ -26,3 +26,6 @@ In order to split the data from full images to many small paches, you can use th
 
 ### Make CM with given weigths
 You can run the cm_calculator.py in order to calculate the confusion matrix for a given weights. It enables to test weights of specific configuration also with a diffrent test configuration because here the weights are given as an independent input (could be usefull fir example to train on four classes and to test on three classes). You only need to adjust the configuration in macros file and to change the paths at the cm_calculator.py
+
+![Example](example.png)
+
