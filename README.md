@@ -21,4 +21,4 @@ The final results of confusion matrixes per set, weights, and log of test\train 
 
 
 ### Create Patches
-In order to plit the data from full images to many small paches, you can use the patches_maker.py file by simply edit its arguemnts (of paths and sizes) at the head of the file and run it.
+In order to split the data from full images to many small paches, you can use the patches_maker.py file by simply edit its arguemnts (of paths and sizes) at the head of the file and run it.
