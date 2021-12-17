@@ -15,12 +15,21 @@ arg_paths = {
     'valid_mask': ('C:\\Users\\david565\\Desktop\\clouds_seg\\data\\vis_valid_msk', 'data\\Valid\\Masks')
 }
 
+arg_paths = {
+    'train_data': ('C:\\Users\\david565\\Desktop\\original_IR4input\\train', 'dataIR\\Train\\Images'),
+    'train_mask': ('C:\\Users\\david565\\Desktop\\clouds_seg\\data\\vis_train_msk', 'dataIR\\Train\\Masks'),
+    'test_data': ('C:\\Users\\david565\\Desktop\\original_IR4input\\test', 'dataIR\\Test\\Images'),
+    'test_mask': ('C:\\Users\\david565\\Desktop\\clouds_seg\\data_IR\\vis_test_msk', 'dataIR\\Test\\Masks'),
+    'valid_data': ('C:\\Users\\david565\\Desktop\\original_IR4input\\valid', 'dataIR\\Valid\\Images'),
+    'valid_mask': ('C:\\Users\\david565\\Desktop\\clouds_seg\\data_IR\\vis_valid_msk', 'dataIR\\Valid\\Masks')
+}
+
 out_size = 128
 drop_confusing_patches_rate = 0.97 * 0  # use zero to for disable
 hist_stat = 0
 hist_stat = np.zeros(4)
 
-only_measure_statistics = True
+only_measure_statistics = False
 # img = np.ones((30, 30))
 W, H = out_size, out_size
 W_jump, H_jump = int(out_size/2), int(out_size/2)
@@ -72,7 +81,7 @@ def file_to_many(in_path, name, out_dir_path):
         print(i)
         path = Path(out_dir_path) / f'{name}_ptch_{i}.png'
         print(cur_patch.shape)
-        img_saver.imsave(Path(path),
+        img_saver.imsave(path,
                          cur_patch, cmap='gray')
 
 
