@@ -47,6 +47,7 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath, device
     since = time.time()
     best_model_wts = copy.deepcopy(model.state_dict())
     best_loss = 1e10
+    best_acc = 0
     # Use gpu if available
     print(f'device={device}')
     model.to(device)
@@ -67,13 +68,14 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath, device
 
         for phase in ['Train', 'Test']:
             # zero the parameter gradients
-            optimizer.zero_grad()
+            #optimizer.zero_grad()
 
             # I think batch norm should stay in validation set
-            # if phase == 'Train':
-            #     model.train()  # Set model to training mode
-            # else:
-            #     model.eval()  # Set model to evaluate mode
+            if phase == 'Train':
+                model.train()  # Set model to training mode
+                
+            else:
+                model.eval()  # Set model to evaluate mode
             #     # model.train()  # Set model to training mode
 
             # Iterate over data.
@@ -114,24 +116,32 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath, device
                         if macros.use_gradient_accumulation > 1:
                             if progress_in_epoch % macros.use_gradient_accumulation == 0:
                                 optimizer.step()
+                                optimizer.zero_grad()
                         else:
                             optimizer.step()
-
+                            optimizer.zero_grad()
                 progress_in_epoch += 1
+                epoch_loss = loss.item()
+                batchsummary[f'{phase}_loss'].append(epoch_loss)
+
             batchsummary['epoch'] = epoch
-            epoch_loss = loss.item()
-            batchsummary[f'{phase}_loss'] = epoch_loss
-            print('{} Loss: {:.4f}'.format(
-                phase, epoch_loss))
-        for field in fieldnames[3:]:
+
+        for field in fieldnames[1:]:
             batchsummary[field] = np.mean(np.array(batchsummary[field]))
+        epoch_loss = batchsummary['Test_loss']
+        epoch_acc = batchsummary['Test_accuracy']
+        print('{} Loss: {:.4f}'.format(
+            phase, epoch_loss))
+
         print(batchsummary)
         with open(os.path.join(bpath, 'log.csv'), 'a', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writerow(batchsummary)
             # deep copy the model
-            if phase == 'Test' and epoch_loss < best_loss:
-                best_loss = epoch_loss
+            # if phase == 'Test' and epoch_loss < best_loss:
+            if phase == 'Test' and epoch_acc > best_acc:
+                # best_loss = epoch_loss
+                best_acc = epoch_acc
                 best_model_wts = copy.deepcopy(model.state_dict())
 
     time_elapsed = time.time() - since
