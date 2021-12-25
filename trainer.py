@@ -70,7 +70,7 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath, device
             # zero the parameter gradients
             #optimizer.zero_grad()
 
-            # I think batch norm should stay in validation set
+          
             if phase == 'Train':
                 model.train()  # Set model to training mode
                 
