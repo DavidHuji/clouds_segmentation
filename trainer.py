@@ -66,17 +66,12 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath, device
         # Initialize batch summary
         batchsummary = {a: [0] for a in fieldnames}
 
-        for phase in ['Train', 'Test']:
-            # zero the parameter gradients
-            #optimizer.zero_grad()
-
-          
+        for phase in ['Train', 'Test']:          
             if phase == 'Train':
                 model.train()  # Set model to training mode
                 
             else:
                 model.eval()  # Set model to evaluate mode
-            #     # model.train()  # Set model to training mode
 
             # Iterate over data.
             progress_in_epoch = 0
@@ -84,31 +79,15 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath, device
                 inputs = sample['image'].float().to(device)
                 masks = sample['mask'].long().to(device)
 
-                # show_img(inputs.numpy().transpose(2,3,1,0).reshape(128,128))
-                # show_img(masks.numpy().reshape(128, 128))
-                # inputs = inputs.to(device)
-                # masks = masks.to(device)
-
-
                 # track history if only in train
                 with torch.set_grad_enabled(phase == 'Train'):
                     outputs = model(inputs)
-                    # show_img(outputs.detach().numpy().reshape(128, 128, -1)[:,:,0])
                     if using_unet:
                         outputs = {'out': outputs}
 
                     loss = criterion(outputs['out'], (masks.squeeze(1) if macros.cross_entropy_loss else masks))
 
-                    ########################
-                    # y_pred = outputs['out'].data.cpu().numpy().ravel()  # Move to cpu, convert to numpy and flatten to a long vector
-                    # y_true = masks.data.cpu().numpy().ravel()  # Move to cpu, convert to numpy and flatten to a long vector
                     for name, metric in metrics.items():
-                        # if name == 'IoU':
-                            # Use a classification threshold of 0.1
-                            # batchsummary[f'{phase}_{name}'].append(
-                                # metric(y_true > 0, y_pred > 0.1))
-
-                        # elif name == 'accuracy':
                         batchsummary[f'{phase}_{name}'].append(float(metric(outputs['out'], masks).item()))
 
                     if phase == 'Train':
@@ -116,10 +95,9 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath, device
                         if macros.use_gradient_accumulation > 1:
                             if progress_in_epoch % macros.use_gradient_accumulation == 0:
                                 optimizer.step()
-                                optimizer.zero_grad()
                         else:
                             optimizer.step()
-                            optimizer.zero_grad()
+                    optimizer.zero_grad()
                 progress_in_epoch += 1
                 epoch_loss = loss.item()
                 batchsummary[f'{phase}_loss'].append(epoch_loss)
@@ -137,17 +115,15 @@ def train_model(model, criterion, dataloaders, optimizer, metrics, bpath, device
         with open(os.path.join(bpath, 'log.csv'), 'a', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writerow(batchsummary)
-            # deep copy the model
-            # if phase == 'Test' and epoch_loss < best_loss:
-            if phase == 'Test' and epoch_acc > best_acc:
-                # best_loss = epoch_loss
+            # deep copy the model          
+            if phase == 'Test' and epoch_acc > best_acc:  # can also change to: epoch_loss < best_loss:
                 best_acc = epoch_acc
                 best_model_wts = copy.deepcopy(model.state_dict())
 
     time_elapsed = time.time() - since
     print('Training complete in {:.0f}m {:.0f}s'.format(
         time_elapsed // 60, time_elapsed % 60))
-    print('Lowest Loss: {:4f}'.format(best_loss))
+    print('Best Test Accuracy: {:4f}'.format(best_acc))
 
     # load best model weights
     model.load_state_dict(best_model_wts)
