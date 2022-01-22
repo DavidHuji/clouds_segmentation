@@ -21,7 +21,11 @@ unify_classes_first_and_third = True
 use_only_single_class = False
 
 use_gradient_accumulation = 1  # 1 or -1 for False
-btch_size=8
+btch_size = 8
+
+# use initialisation weights
+use_initialisation_weights = True
+initialisation_weights = '/home/gamir/DER-Roei/davidn/michal/weights/ir_3classes/weights.pt'
 
 print(f'augmentations={augmentations}')
 print(f'train_all={train_all}')
@@ -38,3 +42,4 @@ print(f'norm_with_average_sub={norm_with_average_sub}')
 print(f'unify_classes_first_and_third={unify_classes_first_and_third}')
 print(f'use_only_single_class={use_only_single_class}')
 print(f'use_gradient_accumulation={use_gradient_accumulation}')
+print(f'use_initialisation_weights={use_initialisation_weights}')

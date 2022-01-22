@@ -120,8 +120,6 @@ def create_hist(i):
 
 
 def create_masks(data_dir, num_classes, weights_filename):
-    results = []
-
     import datahandler, model
 
     ####
