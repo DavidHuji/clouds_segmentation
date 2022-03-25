@@ -4,7 +4,7 @@ import torch
 from torch import nn
 import macros
 
-device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 def get_weights_initializer(std_hp=1.0,Xaviar_init=False):
     def weights_init(m):
