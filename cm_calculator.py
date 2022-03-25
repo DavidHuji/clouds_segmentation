@@ -45,7 +45,7 @@ def accuracy_per_sample(quantized_output, true_mask, num_classes):
     return accuracy_score(index_mask.flatten(), index_output.flatten())
 
 
-device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
 def quantization_fix_thresholds(img, thresholds=(0.5, 0.7, 0.9, 1)):
@@ -120,6 +120,8 @@ def create_hist(i):
 
 
 def create_masks(data_dir, num_classes, weights_filename):
+    results = []
+
     import datahandler, model
 
     ####
@@ -127,13 +129,14 @@ def create_masks(data_dir, num_classes, weights_filename):
     ####
 
     dataloaders = datahandler.get_dataloader_sep_folder(
-        data_dir, batch_size=(macros.btch_size if (macros.overfit_data or str(device) == "cpu") else macros.btch_size), other_than_5_classes=other_than_five_classes, num_classes=num_classes, with_aug=False)
+        data_dir, batch_size=(macros.btch_size), other_than_5_classes=other_than_five_classes, num_classes=num_classes, with_aug=False)
 
     model = model.getModel(using_unet=macros.using_unet, outputchannels=((4 if (not macros.unify_classes_first_and_third) else 3) if macros.cross_entropy_loss else 1))
     # Load the trained model
     weights_filepath = os.path.join(weights_filename, 'weights.pt')
-    model.load_state_dict(torch.load(weights_filepath, map_location=torch.device('cpu')))
+    model.load_state_dict(torch.load(weights_filepath, map_location=torch.device(device)))
     # model.eval()  # Set model to evaluate mode
+    model.to(device)
     model.train()  # Set model to evaluate mode Use batch noorm also for prediction
     imgs_to_show = []
     final_results = {}
@@ -145,11 +148,10 @@ def create_masks(data_dir, num_classes, weights_filename):
         for sample in tqdm(iter(dataloaders[phase])):
 #            if i > 1000:
 #                break
-            inputs = sample['image']
-            # mask = cv2.resize(np.array(sample['mask']), (400, 400), cv2.INTER_AREA)
-            # inputs = cv2.resize(sample['image'], (400, 400), cv2.INTER_AREA)
-            mask = sample['mask']
-            # classes_amount = len(np.unique(mask))
+            inputs = sample['image'].to(torch.device(device)).float()
+            mask = sample['mask'].to(torch.device(device)).float()
+            #print(device)
+#            classes_amount = len(np.unique(mask))
 
             output = model(inputs)
             for single_image_idx in range(output.shape[0]):
@@ -157,27 +159,27 @@ def create_masks(data_dir, num_classes, weights_filename):
                 single_out = output[single_image_idx].unsqueeze(0)
                 single_mask = mask[single_image_idx].unsqueeze(0)
                 acc = metrics.cust_accuracy(single_out, single_mask)
-                total_accuracy = (total_accuracy + acc)
+                total_accuracy = (total_accuracy + acc) 
 
-                ground_truth.append(single_mask.view(-1))
-                predictions.append(single_out.argmax(dim=1).view(-1))
+                ground_truth.append(single_mask.view(-1).cpu())
+                predictions.append(single_out.argmax(dim=1).view(-1).cpu())
 
-                if i % 2 == 0:
+                if i % 100 == 0:
                     new_cm = metrics.calc_confusion_matrix(predictions, ground_truth)
-                    print('\n\n\n', new_cm, '\n')
+                    #print('\n\n\n', new_cm, '\n')
                     ground_truth.clear()
                     predictions.clear()
                     if cm.shape == new_cm.shape:
                         cm_counter += 1
                         cm = (cm + new_cm)
-                        print(cm / cm_counter)
-                        print(cm_counter)
-                    print("ACC  -  ", total_accuracy / i)
+#                        print(cm / cm_counter)
+#                        print(cm_counter)
+                    #print("ACC  -  ", total_accuracy / i)
                 # iou = metrics.my_f1_score(output, mask)
 
                 SHOW = False
                 if SHOW:
-                    imgs_to_show.append(copy.deepcopy(inputs[single_image_idx].numpy().reshape(128, 128)))
+                    imgs_to_show.append(copy.deepcopy(inputs.numpy().transpose(2, 3, 1, 0).reshape(128, 128)))
                     imgs_to_show.append(copy.deepcopy(single_mask.numpy().reshape(128, 128)))
                     imgs_to_show.append(copy.deepcopy(single_out.argmax(dim=1).numpy().reshape(128, 128)))
 
@@ -202,6 +204,8 @@ def create_masks(data_dir, num_classes, weights_filename):
 if __name__ == '__main__':
     # 0.758 accuracy
     # create_masks("C:\\Users\\david565\\Desktop\\clouds_seg\\patches_maker\\data", 4, "C:\\Users\david565\Desktop\MSC\CNN\dlcourse\\finalProj\\testproj\\bbb\\gpu_results\\focaloss_michalUneet20E")
-    test_big_images = False
-    create_masks(("C:\\Users\\david565\Desktop\clouds_seg\data\data" if  test_big_images else "C:\\Users\\david565\\Desktop\\clouds_seg\\patches_maker\\data" if not macros.overfit_data else "C:\\Users\\david565\\Desktop\\clouds_seg\\patches_maker\\overfit_data"), 3,
-                 "C:\\Users\david565\Desktop\MSC\CNN\dlcourse\\finalProj\\testproj\\bbb\\gpu_results\\new_code\\exp_dir_2021_10_03_06_27_48GREATORESULTS-LATEST-NO-SINGLECLASS")
+    #create_masks(("C:\\Users\\david565\\Desktop\\clouds_seg\\patches_maker\\data" if not macros.overfit_data else "C:\\Users\\david565\\Desktop\\clouds_seg\\patches_maker\\overfit_data"), 3,
+     #            "C:\\Users\david565\Desktop\MSC\CNN\dlcourse\\finalProj\\testproj\\bbb\\gpu_results\\new_code\\exp_dir_2021_10_03_19_08_25")
+    final_results = create_masks("data", (3 if macros.unify_classes_first_and_third else 4), 'exp_dir_2021_10_03_19_08_25')
+    with open(os.path.join('exp_dir_2021_10_03_19_08_25', 'metaInfo.txt'), 'a+') as f:
+        f.write('\n\n' + str(final_results))
