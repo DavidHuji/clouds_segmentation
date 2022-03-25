@@ -2,7 +2,7 @@ IMG_MAX_VAL = 255
 MSK_MAX_VAL = 113
 DOWN_SCALE_SIZE = 128
 
-epochs =0
+epochs =1
 augmentations = False
 train_all = True
 
@@ -25,7 +25,7 @@ btch_size = 8
 
 # use initialisation weights
 use_initialisation_weights = True
-initialisation_weights = '/home/gamir/DER-Roei/davidn/michal/weights/ir_3classes/weights.pt'
+initialisation_weights = '/Users/danu/Desktop/michal/IRresults/3classes/weights.pt'
 
 print(f'augmentations={augmentations}')
 print(f'train_all={train_all}')

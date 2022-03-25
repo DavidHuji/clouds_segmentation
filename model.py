@@ -4,6 +4,8 @@ import torch
 from torch import nn
 import macros
 
+device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+
 def get_weights_initializer(std_hp=1.0,Xaviar_init=False):
     def weights_init(m):
         classname = m.__class__.__name__
@@ -22,15 +24,14 @@ def initialize_weights(net, Xaviar_init=False, std_hp=1.0):
 
 
 def getModel(outputchannels=1, using_unet=False, train_all=True):
-    random_init = False
+    random_init = True
     if using_unet:
         random_init = (outputchannels != 1)
         model = torch.hub.load('mateuszbuda/brain-segmentation-pytorch', 'unet',
                                in_channels=1 if macros.one_ch_in else 3, out_channels=outputchannels, init_features=32, pretrained=(not random_init))
 
     else:
-        model = models.segmentation.deeplabv3_resnet101(
-            pretrained=True, progress=True)
+        model = models.segmentation.deeplabv3_resnet101(pretrained=True, progress=True)
 
     if train_all == False:
         for param in model.parameters():
@@ -45,6 +46,9 @@ def getModel(outputchannels=1, using_unet=False, train_all=True):
     if random_init:
         initialize_weights(model, Xaviar_init=True)
 
+    if macros.use_initialisation_weights:
+        #  assuming weights are from the same model
+        model.load_state_dict(torch.load(macros.initialisation_weights, map_location=torch.device(device)))
     model.train()
     return model
 

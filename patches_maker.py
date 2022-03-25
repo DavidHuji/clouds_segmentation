@@ -24,6 +24,15 @@ arg_paths = {
     'valid_mask': ('C:\\Users\\david565\\Desktop\\clouds_seg\\data_IR\\vis_valid_msk', 'dataIR\\Valid\\Masks')
 }
 
+# the following paths are for the new IR images was done in 24/03 (new mac)
+arg_paths = {
+    'train_data': ('/Users/danu/Desktop/michal/new_data_for_ir_full_images/Train/Images', '/Users/danu/Desktop/michal/new_data_for_ir_patches/Train/Images'),
+    'train_mask': ('/Users/danu/Desktop/michal/new_data_for_ir_full_images/Train/Masks',
+                   '/Users/danu/Desktop/michal/new_data_for_ir_patches/Train/Masks'),
+    'test_data': ('/Users/danu/Desktop/michal/new_data_for_ir_full_images/Test/Images', '/Users/danu/Desktop/michal/new_data_for_ir_patches/Test/Images'),
+    'test_mask': ('/Users/danu/Desktop/michal/new_data_for_ir_full_images/Test/Masks', '/Users/danu/Desktop/michal/new_data_for_ir_patches/Test/Masks'),
+}
+
 out_size = 128
 drop_confusing_patches_rate = 0.97 * 0  # use zero to for disable
 hist_stat = 0
@@ -46,6 +55,8 @@ def see_mask():
 
 
 def imag_to_patches(im):
+    if len(im.shape) == 3:
+        im = im[:,:,0:3]  # prevent cases of 4 channels
     tiles = [im[y:y+H, x:x+W] for x in range(0, img_w, W_jump) if x + W < img_w for y in range(0, img_h, H_jump) if y + H < img_h]
     tiles_with_dominante_class = []
     channels_amount = np.array(tiles[0]).shape[-1]
@@ -75,6 +86,11 @@ def file_to_many(in_path, name, out_dir_path):
     # img = cv2.imread(in_path, flags=(0 if True and only_measure_statistics else 1))
     img = np.array(img)
     patches = imag_to_patches(img)
+
+    # dirty hack to prevent name issues
+    # if name[-5:] == 'IR108':
+    #     name = name[:-6]
+
     if only_measure_statistics:
         return
     for i, cur_patch in enumerate(patches):

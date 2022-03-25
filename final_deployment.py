@@ -81,7 +81,7 @@ def calc_seg(img_path, model):
     return img, opening
 
 
-def show_three_imgs(x, labels_list=['image', 'mask', 'prediction'], out_path=''):
+def show_zz_imgs(x, labels_list=['image', 'mask', 'prediction'], out_path=''):
     f, axarr = plt.subplots(1, 3)
     f.set_size_inches(15, 5)
     plot_ndxs = [i for i in range(3)]

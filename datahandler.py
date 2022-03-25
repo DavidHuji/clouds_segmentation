@@ -123,6 +123,7 @@ class SegDataset(Dataset):
         # print(f'index={idx}')
         img_name = self.image_names[idx]
         msk_name = self.mask_names[idx]
+        assert img_name.split('/')[-1][:16] == msk_name.split('/')[-1][:16]  # make sure the images names and the masks names are aligned
 
         if self.maskcolorflag:
             mask = cv2.imread(msk_name, self.maskcolorflag).transpose(2, 0, 1)

@@ -10,10 +10,11 @@ from datetime import datetime
 import macros, metrics, focal_loss
 # torch.cuda.empty_cache()
 
-device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
-data_directory_path = "C:\\Users\\david565\\Desktop\\clouds_seg\\patches_maker\\data" if str(device) == "cpu" else "data"
+data_directory_path = "/Users/danu/Desktop/michal/new_data_for_ir_patches" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_vis"
+data_directory_path = "/Users/danu/Desktop/michal/data"
 if macros.overfit_data:
     data_directory_path = "C:\\Users\\david565\\Desktop\\clouds_seg\\patches_maker\\overfit_data" if str(device) == "cpu" else "overfit_data"
 # data_directory_path = "C:\\Users\\david565\\Desktop\\clouds_seg\\tam_code\\Clouds-Segmentation-Project-master\\data\\data"
@@ -60,7 +61,7 @@ model.train()
 if not os.path.isdir(bpath):
     os.mkdir(bpath)
 
-lr=1e-2
+lr=1e-4
 
 # save configuration in text file
 configuration = {
@@ -89,9 +90,10 @@ with open(os.path.join(bpath, 'metaInfo.txt'), 'w') as f:
 if macros.cross_entropy_loss:
     if macros.weighted_loss:
         if num_classes ==4:
-            criterion = torch.nn.CrossEntropyLoss(weight=torch.tensor([1.0, 2.0, 3.0, 3.0]).to(device))
+            criterion = torch.nn.CrossEntropyLoss(weight=torch.tensor([1.0/0.45, 1.0/0.25, 1.0/0.15, 1.0/0.17]).to(device))
         else:
-            criterion = torch.nn.CrossEntropyLoss(weight=torch.tensor([3.0, 8.0, 12.0]).to(device))
+            print(f'device={device}')
+            criterion = torch.nn.CrossEntropyLoss(weight=torch.tensor([1.0/(0.45 + 0.15), 1.0/0.25, 1.0/0.17]).to(device)) # 3.0, 8.0, 12.0
     else:
         criterion = torch.nn.CrossEntropyLoss()
 
