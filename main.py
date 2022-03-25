@@ -6,6 +6,7 @@ import datahandler
 import argparse
 import os
 import torch
+from pathlib import Path
 from datetime import datetime
 import macros, metrics, focal_loss
 # torch.cuda.empty_cache()
@@ -13,11 +14,12 @@ import macros, metrics, focal_loss
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
-data_directory_path = "/Users/danu/Desktop/michal/new_data_for_ir_patches" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_vis"
-data_directory_path = "/Users/danu/Desktop/michal/data"
+data_directory_path = "/Users/danu/Desktop/michal/overfit_small_data" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_patches"
+
 if macros.overfit_data:
     data_directory_path = "C:\\Users\\david565\\Desktop\\clouds_seg\\patches_maker\\overfit_data" if str(device) == "cpu" else "overfit_data"
-# data_directory_path = "C:\\Users\\david565\\Desktop\\clouds_seg\\tam_code\\Clouds-Segmentation-Project-master\\data\\data"
+
+
 exp_directory_path = "exp_dir_" + str(datetime.now().strftime('%Y_%m_%d_%H_%M_%S'))
 
 
@@ -109,7 +111,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
 # Specify the evalutation metrics
 # metrics = {'f1_score': f1_score, 'IoU': metrics.IoU, 'accuracy' : metrics.cust_accuracy}
-metrics = {'accuracy': metrics.cust_accuracy} # , 'IoU': metrics.IoU}
+metrics = {'accuracy': metrics.cust_accuracy}  # , 'IoU': metrics.IoU}
 
 
 print("Begin training process with the following properties:")
@@ -130,3 +132,13 @@ import cm_calculator
 final_results = cm_calculator.create_masks(data_dir, num_classes, bpath)
 with open(os.path.join(bpath, 'metaInfo.txt'), 'a+') as f:
     f.write('\n\n' + str(final_results))
+
+# calc visualisations
+from visualiser import seg_for_seq
+path_to_trained_weights = bpath
+path_to_gt_masks_test = "/Users/danu/Desktop/michal/data/Test/Masks" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Test/Masks"
+path_to_gt_masks_train = "/Users/danu/Desktop/michal/data/Train/Masks" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Train/Masks"
+path_to_images_test = "/Users/danu/Desktop/michal/data/Test/Images" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Test/Images"
+path_to_images_train = "/Users/danu/Desktop/michal/data/Train/Images" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Train/Images"
+seg_for_seq(Path(path_to_images_test), Path(path_to_gt_masks_test), "test_mask", path_to_trained_weights)
+seg_for_seq(Path(path_to_images_train), Path(path_to_gt_masks_train), "train_mask", path_to_trained_weights)

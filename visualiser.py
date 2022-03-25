@@ -97,6 +97,7 @@ def show_three_imgs(x, labels_list=['image', 'mask', 'prediction'], out_path='')
 
 def seg_for_seq(in_dir_path, gt_path, out_dir_path, w_pth):
     output_dir = os.path.join(w_pth, out_dir_path)
+
     my_model = init_model(w_pth)
     imgs_list = [os.path.join(in_dir_path, o) for o in os.listdir(in_dir_path)
                  if (not os.path.isdir(os.path.join(in_dir_path, o))) and (
@@ -125,7 +126,7 @@ def seg_for_seq(in_dir_path, gt_path, out_dir_path, w_pth):
     seg_list = []
     seg_names_list = []
     acc = 0.0
-    j=0
+    j=0.0
     for i, img_path in enumerate(imgs_list):
         gt = get_img_from_path(gts_list[i])
         # show_three_imgs([gt, gt, gt], out_path=os.path.join(w, "tripels", str(img_path)[-24:]))
@@ -137,8 +138,10 @@ def seg_for_seq(in_dir_path, gt_path, out_dir_path, w_pth):
             gt[gt == k] = mapping[k]
         gt = np.array([cloud_map[p] for p in gt.reshape(-1)]).reshape(gt.shape[0], gt.shape[1], 3)
 
-        matplotlib.image.imsave(os.path.join(output_dir, str(img_path)[-24:]), seg)
-        show_three_imgs([img[:seg.shape[0], :seg.shape[1]], gt[:seg.shape[0], :seg.shape[1]], seg], out_path=os.path.join(w, "tripels", str(in_dir_path)[-12:], str(img_path)[-24:]))
+        # matplotlib.image.imsave(os.path.join(output_dir, str(img_path)[-24:]), seg)
+        # show_three_imgs([img[:seg.shape[0], :seg.shape[1]], gt[:seg.shape[0], :seg.shape[1]], seg], out_path=w_pth  + os.path.join(str(in_dir_path)[-12:], str(img_path)[-24:]))
+        show_three_imgs([img[:seg.shape[0], :seg.shape[1]], gt[:seg.shape[0], :seg.shape[1]], seg],
+                        out_path=os.path.join(w_pth, str(img_path)[-24:]))
         # show_three_imgs([img[:seg.shape[0], :seg.shape[1]], gt[:seg.shape[0], :seg.shape[1]], seg])
         acc += np.array(seg == gt[STEP_SIZE:seg.shape[0]+STEP_SIZE, STEP_SIZE:seg.shape[1]+STEP_SIZE]).mean()
         j+=1
