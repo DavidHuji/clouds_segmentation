@@ -135,6 +135,7 @@ with open(os.path.join(bpath, 'metaInfo.txt'), 'a+') as f:
 
 # calc visualisations
 from visualiser import seg_for_seq
+
 path_to_trained_weights = bpath
 path_to_gt_masks_test = "/Users/danu/Desktop/michal/data/Test/Masks" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Test/Masks"
 path_to_gt_masks_train = "/Users/danu/Desktop/michal/data/Train/Masks" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Train/Masks"

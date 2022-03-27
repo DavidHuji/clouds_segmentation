@@ -14,8 +14,10 @@ from pathlib import Path
 
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-# output_dir = "final_masks_out"
 
+
+if str(device) == "cpu":
+    matplotlib.use('Agg')
 
 def init_model(w_pth):
     my_model = model.getModel(using_unet=macros.using_unet, outputchannels=((4 if (not macros.unify_classes_first_and_third) else 3) if macros.cross_entropy_loss else 1))
@@ -77,6 +79,7 @@ def calc_seg(img_path, model):
 
 
 def show_three_imgs(x, labels_list=['image', 'mask', 'prediction'], out_path=''):
+
     f, axarr = plt.subplots(1, 3)
     f.set_size_inches(15, 5)
     plot_ndxs = [i for i in range(3)]
