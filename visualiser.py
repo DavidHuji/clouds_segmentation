@@ -16,8 +16,8 @@ from pathlib import Path
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
-if str(device) == "cpu":
-    matplotlib.use('Agg')
+if str(device) != "cpu":
+    matplotlib.use('Agg')  # trick to work in gpu server without connection to display for matplotlib - it prevents error as could not connect to any x display
 
 def init_model(w_pth):
     my_model = model.getModel(using_unet=macros.using_unet, outputchannels=((4 if (not macros.unify_classes_first_and_third) else 3) if macros.cross_entropy_loss else 1))
@@ -85,7 +85,7 @@ def show_three_imgs(x, labels_list=['image', 'mask', 'prediction'], out_path='')
     plot_ndxs = [i for i in range(3)]
     for i in range(3):
         axarr[i].axis('off')
-        if i==0:
+        if i == 0:
             axarr[i].imshow(x[i], cmap='gray')
         else:
             axarr[i].imshow(x[i])
@@ -96,6 +96,7 @@ def show_three_imgs(x, labels_list=['image', 'mask', 'prediction'], out_path='')
         plt.savefig(out_path, dpi=200)
     else:
         plt.show()
+    plt.close(fig=f)
 
 
 def seg_for_seq(in_dir_path, gt_path, out_dir_path, w_pth):
