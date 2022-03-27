@@ -95,7 +95,7 @@ def show_three_imgs(x, labels_list=['image', 'mask', 'prediction'], out_path='')
         plt.show()
 
 
-def seg_for_seq(in_dir_path, gt_path, w_pth):
+def seg_for_seq(in_dir_path, gt_path, out_dir_path, w_pth):
     my_model = init_model(w_pth)
     imgs_list = [os.path.join(in_dir_path, o) for o in os.listdir(in_dir_path)
                  if (not os.path.isdir(os.path.join(in_dir_path, o))) and (
