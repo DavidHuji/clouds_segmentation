@@ -101,12 +101,12 @@ def show_three_imgs(x, labels_list=['image', 'mask', 'prediction'], out_path='')
 
 def seg_for_seq(in_dir_path, gt_path, out_dir_path, w_pth):
     my_model = init_model(w_pth)
-    imgs_list = [os.path.join(in_dir_path, o) for o in os.listdir(in_dir_path)
+    imgs_list = sorted([os.path.join(in_dir_path, o) for o in os.listdir(in_dir_path)
                  if (not os.path.isdir(os.path.join(in_dir_path, o))) and (
-                         o[-3:] == 'jpg' or o[-3:] == 'png' or o[-3:] == 'PNG' or o[-3:] == 'npz')]
-    gts_list = [os.path.join(gt_path, o) for o in os.listdir(gt_path)
+                         o[-3:] == 'jpg' or o[-3:] == 'png' or o[-3:] == 'PNG' or o[-3:] == 'npz')])
+    gts_list = sorted([os.path.join(gt_path, o) for o in os.listdir(gt_path)
                  if (not os.path.isdir(os.path.join(gt_path, o))) and (
-                         o[-3:] == 'jpg' or o[-3:] == 'png' or o[-3:] == 'PNG' or o[-3:] == 'npz')]
+                         o[-3:] == 'jpg' or o[-3:] == 'png' or o[-3:] == 'PNG' or o[-3:] == 'npz')])
 
     # colors of original labels
     cloud_map = np.array([[0., 0., 0.],

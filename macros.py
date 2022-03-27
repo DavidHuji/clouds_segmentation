@@ -2,7 +2,7 @@ IMG_MAX_VAL = 255
 MSK_MAX_VAL = 113
 DOWN_SCALE_SIZE = 128
 
-epochs =0
+epochs =1
 augmentations = False
 train_all = True
 
