@@ -274,6 +274,12 @@ class mask_to_n_class(object):
             38: 1.0,
             75: 0.0,
             113: 2.0
+        } if not macros.five_classes else {
+            0: 0.0,
+            14: 1.0,
+            38: 2.0,
+            75: 3.0,
+            113: 4.0,
         }
 
     def __call__(self, sample):

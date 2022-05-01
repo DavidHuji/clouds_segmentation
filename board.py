@@ -2,8 +2,6 @@ path = 'data/Test/Masks/aaa.png'
 import numpy as np
 
 
-
-
 def mask_to_class(mask):
     mapping = {
         0: 0,

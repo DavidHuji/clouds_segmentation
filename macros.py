@@ -23,6 +23,8 @@ use_only_single_class = False
 use_gradient_accumulation = 1  # 1 or -1 for False
 btch_size = 8
 
+five_classes = True
+
 # use initialisation weights
 use_initialisation_weights = False
 initialisation_weights = '/Users/danu/Desktop/michal/IRresults/3classes/weights.pt'

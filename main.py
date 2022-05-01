@@ -19,6 +19,8 @@ data_directory_path = "/Users/danu/Desktop/michal/overfit_small_data" if str(dev
 if macros.overfit_data:
     data_directory_path = "C:\\Users\\david565\\Desktop\\clouds_seg\\patches_maker\\overfit_data" if str(device) == "cpu" else "overfit_data"
 
+if macros.five_classes:
+    data_directory_path = "/Users/danu/Desktop/michal/new_masks_of_5_classes/fake_5classes_data_just_for_code_testing" if str(device) == "cpu" else "some path"
 
 exp_directory_path = "exp_dir_" + str(datetime.now().strftime('%Y_%m_%d_%H_%M_%S'))
 
@@ -57,7 +59,7 @@ epochs = args.epochs
 batchsize = args.batchsize
 
 # Create the deeplabv3 resnet101 model which is pretrained on a subset of COCO train2017, on the 20 categories that are present in the Pascal VOC dataset.
-model = getModel(using_unet=macros.using_unet, train_all=train_all, outputchannels=((4 if (not macros.unify_classes_first_and_third) else 3) if macros.cross_entropy_loss else 1))
+model = getModel(using_unet=macros.using_unet, train_all=train_all, outputchannels=(((4 if (not macros.unify_classes_first_and_third) else 3) if not macros.five_classes else 5) if macros.cross_entropy_loss else 1))
 model.train()
 # Create the experiment directory if not present
 if not os.path.isdir(bpath):
@@ -104,6 +106,8 @@ if macros.cross_entropy_loss:
 else:
     criterion = torch.nn.MSELoss(reduction='mean')
 
+if macros.five_classes:
+    criterion = torch.nn.CrossEntropyLoss()
 
 # Specify the optimizer with a lower learning rate
 print(f'lr={lr}')

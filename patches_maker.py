@@ -27,10 +27,14 @@ arg_paths = {
 # the following paths are for the new IR images was done in 24/03 (new mac)
 arg_paths = {
     'train_data': ('/Users/danu/Desktop/michal/new_data_for_ir_full_images/Train/Images', '/Users/danu/Desktop/michal/new_data_for_ir_patches/Train/Images'),
-    'train_mask': ('/Users/danu/Desktop/michal/new_data_for_ir_full_images/Train/Masks',
-                   '/Users/danu/Desktop/michal/new_data_for_ir_patches/Train/Masks'),
+    'train_mask': ('/Users/danu/Desktop/michal/new_data_for_ir_full_images/Train/Masks', '/Users/danu/Desktop/michal/new_data_for_ir_patches/Train/Masks'),
     'test_data': ('/Users/danu/Desktop/michal/new_data_for_ir_full_images/Test/Images', '/Users/danu/Desktop/michal/new_data_for_ir_patches/Test/Images'),
     'test_mask': ('/Users/danu/Desktop/michal/new_data_for_ir_full_images/Test/Masks', '/Users/danu/Desktop/michal/new_data_for_ir_patches/Test/Masks'),
+}
+
+# the following paths are for the new masks of five classes (1.5)
+arg_paths = {
+    'train_mask': ('/Users/danu/Desktop/michal/new_masks_of_5_classes/full_iamge_masks', '/Users/danu/Desktop/michal/new_masks_of_5_classes/masks_patches')
 }
 
 out_size = 128
@@ -113,4 +117,6 @@ def handle_all_data():
     for key in arg_paths.keys():
         dir_to_dir(arg_paths[key][0], arg_paths[key][1])
 
-handle_all_data()
+
+if __name__ == '__main__':
+    handle_all_data()
