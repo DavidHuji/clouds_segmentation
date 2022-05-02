@@ -33,8 +33,17 @@ arg_paths = {
 }
 
 # the following paths are for the new masks of five classes (1.5)
+# train_mask: (1) input folder images for generating the patches, (2) output folder for patches
 arg_paths = {
     'train_mask': ('/Users/danu/Desktop/michal/new_masks_of_5_classes/full_iamge_masks', '/Users/danu/Desktop/michal/new_masks_of_5_classes/masks_patches')
+}
+
+# Michal's Mac
+arg_paths = {
+    'train_data': ('/Users/python/python_data/ACMAP/SEVIRI_MSG/Train_img', '/Users/python/python_data/ACMAP/SEVIRI_MSG/IRpatches/Train_img_patches'),
+    'train_mask': ('/Users/python/python_data/ACMAP/SEVIRI_MSG/Train_msk', '/Users/python/python_data/ACMAP/SEVIRI_MSG/IRpatches/Train_msk_patches'),
+    'test_data': ('/Users/python/python_data/ACMAP/SEVIRI_MSG/Test_img', '//Users/python/python_data/ACMAP/SEVIRI_MSG/IRpatches/Test_img_patches'),
+    'test_mask': ('/Users/python/python_data/ACMAP/SEVIRI_MSG/Test_msk', '/Users/python/python_data/ACMAP/SEVIRI_MSG/IRpatches/Test_msk_patches'),
 }
 
 out_size = 128
