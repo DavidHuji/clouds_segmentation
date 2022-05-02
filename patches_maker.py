@@ -49,13 +49,14 @@ W_jump, H_jump = int(out_size/2), int(out_size/2)
 img_w, img_h = 1256, 1213
 
 def see_mask():
-    in_path = "C:\\Users\\david565\\Desktop\\clouds_seg\\data\\vis_test_img\\2016_09_05_10_00_vis.png"
+    in_path = "/Users/danu/Desktop/michal/new_masks_of_5_classes/full_iamge_masks/2018_08_09_00_00_IR108_truth.png"
     img = plt.imread(in_path)
     img = np.array(img)
     print("aaaa", img.shape)
     plt.imshow(img)
     plt.show()
-# see_mask()
+
+see_mask()
 
 
 def imag_to_patches(im):
