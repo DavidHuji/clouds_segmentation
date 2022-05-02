@@ -20,7 +20,7 @@ norm_with_average_sub = True
 unify_classes_first_and_third = False
 use_only_single_class = False
 
-use_gradient_accumulation = 1  # 1 or -1 for False
+use_gradient_accumulation = 1  # 1 or -1 for False (other numbers will increase batch size 8*1 or 8*2)
 btch_size = 8
 
 five_classes = True

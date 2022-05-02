@@ -45,7 +45,7 @@ parser.add_argument("--train_all", default=macros.train_all, type=int)
 args = parser.parse_args()
 
 ######
-num_classes = (4 if (not macros.unify_classes_first_and_third) else 3) if macros.cross_entropy_loss else args.num_classes
+num_classes = (5 if (not macros.unify_classes_first_and_third) else 3) if macros.cross_entropy_loss else args.num_classes
 train_all = (args.train_all==1)
 
 other_than_five_classes = True if num_classes != 5 else False
@@ -59,7 +59,7 @@ epochs = args.epochs
 batchsize = args.batchsize
 
 # Create the deeplabv3 resnet101 model which is pretrained on a subset of COCO train2017, on the 20 categories that are present in the Pascal VOC dataset.
-model = getModel(using_unet=macros.using_unet, train_all=train_all, outputchannels=(((4 if (not macros.unify_classes_first_and_third) else 3) if not macros.five_classes else 5) if macros.cross_entropy_loss else 1))
+model = getModel(using_unet=macros.using_unet, train_all=train_all, outputchannels=(((5 if (not macros.unify_classes_first_and_third) else 3) if not macros.five_classes else 5) if macros.cross_entropy_loss else 1))
 model.train()
 # Create the experiment directory if not present
 if not os.path.isdir(bpath):
