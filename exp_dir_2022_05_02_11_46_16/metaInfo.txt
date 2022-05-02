@@ -1,0 +1,16 @@
+{'epochs': 1
+ 'augmentations': False
+ 'train_all': True
+ 'cross_entropy_loss': True
+ 'focal_loss': False
+ 'using_unet': True
+ 'using_michals_unet': False
+ 'overfit_data': False
+ 'weighted_loss': True
+ 'one_ch_in': True
+ 'norm_with_average_sub': True
+ 'unify_classes_first_and_third': False
+ 'use_only_single_class': False
+ 'use_gradient_accumulation': 1
+ 'batch_size': 1
+ 'LR': 0.0001}

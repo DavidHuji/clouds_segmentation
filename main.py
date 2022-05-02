@@ -13,14 +13,14 @@ import macros, metrics, focal_loss
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-
-data_directory_path = "/Users/danu/Desktop/michal/overfit_small_data" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_patches"
+# path to main dataset used for training/test
+data_directory_path = "/Users/python/python_data/ACMAP/SEVIRI_MSG/IRpatches/Data4main" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_patches"
 
 if macros.overfit_data:
     data_directory_path = "C:\\Users\\david565\\Desktop\\clouds_seg\\patches_maker\\overfit_data" if str(device) == "cpu" else "overfit_data"
 
 if macros.five_classes:
-    data_directory_path = "/Users/danu/Desktop/michal/new_masks_of_5_classes/fake_5classes_data_just_for_code_testing" if str(device) == "cpu" else "some path"
+    data_directory_path = "/Users/python/python_data/ACMAP/SEVIRI_MSG/IRpatches/Data4main" if str(device) == "cpu" else "some path"
 
 exp_directory_path = "exp_dir_" + str(datetime.now().strftime('%Y_%m_%d_%H_%M_%S'))
 
@@ -141,9 +141,9 @@ with open(os.path.join(bpath, 'metaInfo.txt'), 'a+') as f:
 from visualiser import seg_for_seq
 
 path_to_trained_weights = bpath
-path_to_gt_masks_test = "/Users/danu/Desktop/michal/data/Test/Masks" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Test/Masks"
-path_to_gt_masks_train = "/Users/danu/Desktop/michal/data/Train/Masks" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Train/Masks"
-path_to_images_test = "/Users/danu/Desktop/michal/data/Test/Images" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Test/Images"
-path_to_images_train = "/Users/danu/Desktop/michal/data/Train/Images" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Train/Images"
+path_to_gt_masks_test = "/Users/python/python_data/ACMAP/SEVIRI_MSG/IRpatches/Data4main/Test/Masks" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Test/Masks"
+path_to_gt_masks_train = "//Users/python/python_data/ACMAP/SEVIRI_MSG/IRpatches/Data4main/Train/Masks" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Train/Masks"
+path_to_images_test = "/Users/python/python_data/ACMAP/SEVIRI_MSG/IRpatches/Data4main/Test/Images" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Test/Images"
+path_to_images_train = "/Users/python/python_data/ACMAP/SEVIRI_MSG/IRpatches/Data4main/Train/Images" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Train/Images"
 seg_for_seq(Path(path_to_images_test), Path(path_to_gt_masks_test), "test_mask", path_to_trained_weights)
 seg_for_seq(Path(path_to_images_train), Path(path_to_gt_masks_train), "train_mask", path_to_trained_weights)

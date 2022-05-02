@@ -17,7 +17,7 @@ overfit_data = False
 one_ch_in = True
 norm_with_average_sub = True
 
-unify_classes_first_and_third = True
+unify_classes_first_and_third = False
 use_only_single_class = False
 
 use_gradient_accumulation = 1  # 1 or -1 for False
