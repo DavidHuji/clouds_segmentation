@@ -10,14 +10,21 @@ from pathlib import Path
 good_name_suffix = ['09_00_vis', '10_00_vis', '11_00_vis', '12_00_vis', '13_00_vis', '14_00_vis', '15_00_vis']
 excel_out_path = 'results.xlsx'
 out_directory = 'masks'
-weights_path = "C:\\Users\david565\Desktop\MSC\CNN\dlcourse\\finalProj\\testproj\\bbb\\gpu_results\\new_code\\latest\\exp_dir_2021_10_09_02_28_22"  # model's weights
-data_pt = "C:\\Users\\david565\\Desktop\\clouds_seg\\data\\vis_valid_img"  # path to a directory that contains all of the images
+weights_path = "exp_dir_2022_05_01_22_04_11"  # model's weights
+data_pt = "/Users/danu/Desktop/michal/data/Test/Images"  # path to a directory that contains all of the images
 
 # colors of original labels
 cloud_map = np.array([[0., 0., 0.],
                       [0.75, 0.15, 0.1],
                       ([0.8, 0.8, 0.0] if macros.unify_classes_first_and_third else [0.1, 0.7, 0.2]),
                       [0.8, 0.8, 0.]])
+
+if macros.five_classes:
+    cloud_map = np.array([[0., 0., 0.],
+                      [0.75, 0.15, 0.1],
+                      [0.1, 0.7, 0.2],
+                      [0.8, 0.8, 0.],
+                      [1., 1., 1.]])  # 139
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
