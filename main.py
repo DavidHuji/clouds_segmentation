@@ -20,7 +20,7 @@ if macros.overfit_data:
     data_directory_path = "C:\\Users\\david565\\Desktop\\clouds_seg\\patches_maker\\overfit_data" if str(device) == "cpu" else "overfit_data"
 
 if macros.five_classes:
-    data_directory_path = "/Users/danu/Desktop/michal/new_masks_of_5_classes/fake_5classes_data_just_for_code_testing" if str(device) == "cpu" else "some path"
+    data_directory_path = "/Users/danu/Desktop/michal/new_masks_of_5_classes/fake_5classes_data_just_for_code_testing" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/final5classesPatches"
 
 exp_directory_path = "exp_dir_" + str(datetime.now().strftime('%Y_%m_%d_%H_%M_%S'))
 
@@ -144,10 +144,10 @@ from visualiser import seg_for_seq
 
 path_to_trained_weights = bpath
 if macros.five_classes:
-    path_to_gt_masks_test = "/Users/danu/Desktop/michal/5classesFinal17_5/Test_msk" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Test/Masks"
-    path_to_gt_masks_train = "/Users/danu/Desktop/michal/5classesFinal17_5/Train_msk" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Train/Masks"
-    path_to_images_test = "/Users/danu/Desktop/michal/5classesFinal17_5/Test_img" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Test/Images"
-    path_to_images_train = "/Users/danu/Desktop/michal/5classesFinal17_5/Train_img" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Train/Images"
+    path_to_gt_masks_test = "/Users/danu/Desktop/michal/5classesFinal17_5/Test_msk" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/5classesFinal17_5/Test_msk"
+    path_to_gt_masks_train = "/Users/danu/Desktop/michal/5classesFinal17_5/Train_msk" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/5classesFinal17_5/Train_msk"
+    path_to_images_test = "/Users/danu/Desktop/michal/5classesFinal17_5/Test_img" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/5classesFinal17_5/Test_img"
+    path_to_images_train = "/Users/danu/Desktop/michal/5classesFinal17_5/Train_img" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/5classesFinal17_5/Train_img"
 else:
     path_to_gt_masks_test = "/Users/danu/Desktop/michal/data/Test/Masks" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Test/Masks"
     path_to_gt_masks_train = "/Users/danu/Desktop/michal/data/Train/Masks" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Train/Masks"
