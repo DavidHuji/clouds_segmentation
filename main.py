@@ -45,7 +45,7 @@ parser.add_argument("--train_all", default=macros.train_all, type=int)
 args = parser.parse_args()
 
 ######
-num_classes = (4 if (not macros.unify_classes_first_and_third) else 3) if macros.cross_entropy_loss else args.num_classes
+num_classes = 5 if macros.five_classes else (4 if (not macros.unify_classes_first_and_third) else 3) if macros.cross_entropy_loss else args.num_classes
 train_all = (args.train_all==1)
 
 other_than_five_classes = True if num_classes != 5 else False
@@ -108,7 +108,9 @@ else:
 
 if macros.five_classes:
     criterion = torch.nn.CrossEntropyLoss()
-
+    # [0.28162515 0.23309405 0.19862842 0.15451344 0.13213895] is the statistics of the 5 classes (17.05)
+    if macros.weighted_loss:
+        criterion = torch.nn.CrossEntropyLoss(weight=torch.tensor([1.0 / 0.28, 1.0 / 0.23, 1.0 / 0.19, 1.0 / 0.15, 1.0 / 0.13]).to(device))
 # Specify the optimizer with a lower learning rate
 print(f'lr={lr}')
 optimizer = torch.optim.Adam(model.parameters(), lr=lr)
@@ -141,9 +143,15 @@ with open(os.path.join(bpath, 'metaInfo.txt'), 'a+') as f:
 from visualiser import seg_for_seq
 
 path_to_trained_weights = bpath
-path_to_gt_masks_test = "/Users/danu/Desktop/michal/data/Test/Masks" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Test/Masks"
-path_to_gt_masks_train = "/Users/danu/Desktop/michal/data/Train/Masks" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Train/Masks"
-path_to_images_test = "/Users/danu/Desktop/michal/data/Test/Images" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Test/Images"
-path_to_images_train = "/Users/danu/Desktop/michal/data/Train/Images" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Train/Images"
+if macros.five_classes:
+    path_to_gt_masks_test = "/Users/danu/Desktop/michal/5classesFinal17_5/Test_msk" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Test/Masks"
+    path_to_gt_masks_train = "/Users/danu/Desktop/michal/5classesFinal17_5/Train_msk" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Train/Masks"
+    path_to_images_test = "/Users/danu/Desktop/michal/5classesFinal17_5/Test_img" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Test/Images"
+    path_to_images_train = "/Users/danu/Desktop/michal/5classesFinal17_5/Train_img" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Train/Images"
+else:
+    path_to_gt_masks_test = "/Users/danu/Desktop/michal/data/Test/Masks" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Test/Masks"
+    path_to_gt_masks_train = "/Users/danu/Desktop/michal/data/Train/Masks" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Train/Masks"
+    path_to_images_test = "/Users/danu/Desktop/michal/data/Test/Images" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Test/Images"
+    path_to_images_train = "/Users/danu/Desktop/michal/data/Train/Images" if str(device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Train/Images"
 seg_for_seq(Path(path_to_images_test), Path(path_to_gt_masks_test), "test_mask", path_to_trained_weights)
 seg_for_seq(Path(path_to_images_train), Path(path_to_gt_masks_train), "train_mask", path_to_trained_weights)

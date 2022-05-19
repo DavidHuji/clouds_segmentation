@@ -20,12 +20,36 @@ if str(device) != "cpu":
     matplotlib.use('Agg')  # trick to work in gpu server without connection to display for matplotlib - it prevents error as could not connect to any x display
 
 def init_model(w_pth):
-    my_model = model.getModel(using_unet=macros.using_unet, outputchannels=((4 if (not macros.unify_classes_first_and_third) else 3) if macros.cross_entropy_loss else 1))
+    my_model = model.getModel(using_unet=macros.using_unet, outputchannels=(((4 if (not macros.unify_classes_first_and_third) else 3) if not macros.five_classes else 5) if macros.cross_entropy_loss else 1))
     # Load the trained model
     weights_filepath = os.path.join(w_pth, 'weights.pt')
     my_model.load_state_dict(torch.load(weights_filepath, map_location=torch.device(device)))
     my_model.eval()  # Set model to evaluate mode
     return my_model
+
+
+def see_the_original_colors(pt):
+    import matplotlib.pyplot as plt
+    import matplotlib.image as mpimg
+    img = mpimg.imread(pt)
+    imgplot = plt.imshow(img)
+    plt.show()
+    a = cv2.imread(pt, 1)
+    a = img.reshape(-1, 4)
+    ts = []
+    def is_t_in_ts(t):
+        for s in ts:
+            if s[0] == t[0] and s[1] == t[1] and s[2] == t[2]:
+                return True
+        return False
+    for t in a:
+        s = copy.deepcopy(t)
+        if not is_t_in_ts(t):
+            ts.append(list(s))
+            print(t)
+    print('Values: ', ts)
+    return ts
+# see_the_original_colors(pt='/Users/danu/Desktop/michal/5classesFinal17_5/Test_msk/2017_08_05_03_00_IR108_truth.png')
 
 
 def get_img_from_path(path_to_patch):
@@ -125,6 +149,16 @@ def seg_for_seq(in_dir_path, gt_path, out_dir_path, w_pth):
         113: 2.0
     }
 
+    if macros.five_classes:
+        mapping = {
+                0: 0.0,
+                14: 1.0,
+                38: 2.0,
+                75: 3.0,
+                113: 4.0,
+            }    # colors of original labels
+        cloud_map = np.array( [[0.0, 0.0, 0.0],  [0.0, 0.0, 0.5019608], [0.5019608, 0.0, 0.0], [0.0, 0.5019608, 0.0], [0.5019608, 0.5019608, 0.0]])
+
     seg_list = []
     seg_names_list = []
     acc = 0.0
@@ -151,7 +185,14 @@ def seg_for_seq(in_dir_path, gt_path, out_dir_path, w_pth):
     print(f'acc={acc} for path={in_dir_path}')
 
 if __name__ == "__main__":
-    for w in  ["C:\\Users\david565\Desktop\MSC\CNN\dlcourse\\finalProj\\testproj\\bbb\\gpu_results\\new_code\\latest\\exp_dir_2021_10_09_02_28_22", "C:\\Users\david565\Desktop\MSC\CNN\dlcourse\\finalProj\\testproj\\bbb\\gpu_results\\new_code\\latest\\exp_dir_2021_10_09_02_28_54"]:
-        seg_for_seq(Path("C:\\Users\\david565\\Desktop\\clouds_seg\\data\\vis_valid_img"), Path("C:\\Users\\david565\\Desktop\\clouds_seg\\data\\vis_valid_msk"), "valid_mask", w)
-        seg_for_seq(Path("C:\\Users\\david565\\Desktop\\clouds_seg\\data\\vis_test_img"),  Path("C:\\Users\\david565\\Desktop\\clouds_seg\\data\\vis_test_msk"), "test_mask", w)
-        seg_for_seq(Path("C:\\Users\\david565\\Desktop\\clouds_seg\\data\\vis_train_img"),  Path("C:\\Users\\david565\\Desktop\\clouds_seg\\data\\vis_train_msk"), "train_mask", w)
+    # for w in  ["C:\\Users\david565\Desktop\MSC\CNN\dlcourse\\finalProj\\testproj\\bbb\\gpu_results\\new_code\\latest\\exp_dir_2021_10_09_02_28_22", "C:\\Users\david565\Desktop\MSC\CNN\dlcourse\\finalProj\\testproj\\bbb\\gpu_results\\new_code\\latest\\exp_dir_2021_10_09_02_28_54"]:
+    #     seg_for_seq(Path("C:\\Users\\david565\\Desktop\\clouds_seg\\data\\vis_valid_img"), Path("C:\\Users\\david565\\Desktop\\clouds_seg\\data\\vis_valid_msk"), "valid_mask", w)
+    #     seg_for_seq(Path("C:\\Users\\david565\\Desktop\\clouds_seg\\data\\vis_test_img"),  Path("C:\\Users\\david565\\Desktop\\clouds_seg\\data\\vis_test_msk"), "test_mask", w)
+    #     seg_for_seq(Path("C:\\Users\\david565\\Desktop\\clouds_seg\\data\\vis_train_img"),  Path("C:\\Users\\david565\\Desktop\\clouds_seg\\data\\vis_train_msk"), "train_mask", w)
+
+    path_to_images_test = "/Users/danu/Desktop/michal/5classesFinal17_5/Test_img" if str(
+        device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Test/Images"
+    path_to_gt_masks_test = "/Users/danu/Desktop/michal/5classesFinal17_5/Test_msk" if str(
+        device) == "cpu" else "/home/gamir/DER-Roei/davidn/michal/new_data_for_ir_full_images/Test/Masks"
+
+    seg_for_seq(Path(path_to_images_test), Path(path_to_gt_masks_test), "test_mask", 'exp_dir_2022_05_18_12_31_09')

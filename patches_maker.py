@@ -37,10 +37,17 @@ arg_paths = {
     'train_mask': ('/Users/danu/Desktop/michal/new_masks_of_5_classes/full_iamge_masks', '/Users/danu/Desktop/michal/new_masks_of_5_classes/masks_patches')
 }
 
+# the following paths are for the new masks of five classes (17.5)
+arg_paths = {
+    'train_data': ('/Users/danu/Desktop/michal/5classesFinal17_5/Train_img', '/Users/danu/Desktop/michal/final5classesPatches/Train/Images'),
+    'train_mask': ('/Users/danu/Desktop/michal/5classesFinal17_5/Train_msk', '/Users/danu/Desktop/michal/final5classesPatches/Train/Masks'),
+    'test_data': ('/Users/danu/Desktop/michal/5classesFinal17_5/Test_img', '/Users/danu/Desktop/michal/final5classesPatches/Test/Images'),
+    'test_mask': ('/Users/danu/Desktop/michal/5classesFinal17_5/Test_msk', '/Users/danu/Desktop/michal/final5classesPatches/Test/Masks'),
+}
+
 out_size = 128
 drop_confusing_patches_rate = 0.97 * 0  # use zero to for disable
-hist_stat = 0
-hist_stat = np.zeros(4)
+hist_stat = np.zeros(5)
 
 only_measure_statistics = False
 # img = np.ones((30, 30))
@@ -68,10 +75,10 @@ def imag_to_patches(im):
     global hist_stat
     print(f'tiles amount = {len(tiles)}')
     for t in tiles:
-        h = np.histogram(np.array(t), bins=4, range=(0.0, 114.0))[0]
+        h = np.histogram(np.array(t), bins=hist_stat.shape[0])[0]
         hist_stat = hist_stat + h
         if drop_confusing_patches_rate > 0:
-            h = np.histogram(np.array(t), bins=4)[0]
+            h = np.histogram(np.array(t), bins=hist_stat.shape[0])[0]
             print(h)
             if h.max() >= (channels_amount * out_size * out_size * drop_confusing_patches_rate):
                 tiles_with_dominante_class.append(t)
@@ -82,40 +89,43 @@ def imag_to_patches(im):
 
     if drop_confusing_patches_rate > 0:
         return tiles_with_dominante_class
-    print(hist_stat / np.sum(hist_stat))
-    return tiles
+    # print(hist_stat / np.sum(hist_stat))
+    return tiles, hist_stat
 
 
 def file_to_many(in_path, name, out_dir_path):
     img = plt.imread(in_path)
     # img = cv2.imread(in_path, flags=(0 if True and only_measure_statistics else 1))
     img = np.array(img)
-    patches = imag_to_patches(img)
+    patches, hist_stat = imag_to_patches(img)
 
     # dirty hack to prevent name issues
     # if name[-5:] == 'IR108':
     #     name = name[:-6]
-
-    if only_measure_statistics:
-        return
     for i, cur_patch in enumerate(patches):
         print(i)
         path = Path(out_dir_path) / f'{name}_ptch_{i}.png'
         print(cur_patch.shape)
         img_saver.imsave(path,
                          cur_patch, cmap='gray')
+    return hist_stat
 
 
 def dir_to_dir(in_path, out_dir_path):
+    if not os.path.isdir(out_dir_path):
+        os.mkdir(out_dir_path)
     in_imgs_paths_list = [os.path.join(in_path, o) for o in os.listdir(in_path)
                           if (not os.path.isdir(os.path.join(in_path, o))) and (
                                       o[-3:] == 'jpg' or o[-3:] == 'png' or o[-3:] == 'PNG' or o[-3:] == 'npz')]
     for file_path in in_imgs_paths_list:
         file_to_many(file_path, os.path.basename(file_path)[:-4], out_dir_path)
+    print('stats of ',in_path , hist_stat / np.sum(hist_stat))
 
 
 def handle_all_data():
+    global hist_stat
     for key in arg_paths.keys():
+        hist_stat = np.zeros(5)
         dir_to_dir(arg_paths[key][0], arg_paths[key][1])
 
 

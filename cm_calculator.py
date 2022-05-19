@@ -131,7 +131,7 @@ def create_masks(data_dir, num_classes, weights_filename):
     dataloaders = datahandler.get_dataloader_sep_folder(
         data_dir, batch_size=(macros.btch_size), other_than_5_classes=other_than_five_classes, num_classes=num_classes, with_aug=False)
 
-    model = model.getModel(using_unet=macros.using_unet, outputchannels=((4 if (not macros.unify_classes_first_and_third) else 3) if macros.cross_entropy_loss else 1))
+    model = model.getModel(using_unet=macros.using_unet, outputchannels=(((4 if (not macros.unify_classes_first_and_third) else 3) if not macros.five_classes else 5) if macros.cross_entropy_loss else 1))
     # Load the trained model
     weights_filepath = os.path.join(weights_filename, 'weights.pt')
     model.load_state_dict(torch.load(weights_filepath, map_location=torch.device(device)))
@@ -206,6 +206,7 @@ if __name__ == '__main__':
     # create_masks("C:\\Users\\david565\\Desktop\\clouds_seg\\patches_maker\\data", 4, "C:\\Users\david565\Desktop\MSC\CNN\dlcourse\\finalProj\\testproj\\bbb\\gpu_results\\focaloss_michalUneet20E")
     #create_masks(("C:\\Users\\david565\\Desktop\\clouds_seg\\patches_maker\\data" if not macros.overfit_data else "C:\\Users\\david565\\Desktop\\clouds_seg\\patches_maker\\overfit_data"), 3,
      #            "C:\\Users\david565\Desktop\MSC\CNN\dlcourse\\finalProj\\testproj\\bbb\\gpu_results\\new_code\\exp_dir_2021_10_03_19_08_25")
-    final_results = create_masks("data", (3 if macros.unify_classes_first_and_third else 4), 'exp_dir_2021_10_03_19_08_25')
-    with open(os.path.join('exp_dir_2021_10_03_19_08_25', 'metaInfo.txt'), 'a+') as f:
+    # final_results = create_masks("data", (3 if macros.unify_classes_first_and_third else 4), 'exp_dir_2021_10_03_19_08_25')
+    final_results = create_masks("/Users/danu/Desktop/michal/new_masks_of_5_classes/fake_5classes_data_just_for_code_testing", 5, 'exp_dir_2022_05_18_12_31_09')
+    with open(os.path.join('exp_dir_2022_05_18_12_31_09', 'metaInfo.txt'), 'a+') as f:
         f.write('\n\n' + str(final_results))
