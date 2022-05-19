@@ -6,6 +6,8 @@ from matplotlib import image as img_saver
 
 
 ### args
+import macros
+
 arg_paths = {
     'train_data': ('C:\\Users\\david565\\Desktop\\clouds_seg\\data\\vis_train_img', 'data\\Train\\Images'),
     'train_mask': ('C:\\Users\\david565\\Desktop\\clouds_seg\\data\\vis_train_msk', 'data\\Train\\Masks'),
@@ -47,7 +49,7 @@ arg_paths = {
 
 out_size = 128
 drop_confusing_patches_rate = 0.97 * 0  # use zero to for disable
-hist_stat = np.zeros(5)
+hist_stat = np.zeros(5 if macros.five_classes else 4)
 
 only_measure_statistics = False
 # img = np.ones((30, 30))
