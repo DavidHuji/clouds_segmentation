@@ -24,6 +24,9 @@ use_gradient_accumulation = 1  # 1 or -1 for False
 btch_size = 8
 
 five_classes = True
+if five_classes:
+  unify_classes_first_and_third = False
+  
 
 # use initialisation weights
 use_initialisation_weights = False
